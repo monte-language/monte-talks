@@ -149,7 +149,25 @@ Allen, for getting me to build Typhon
 \end_layout
 
 \begin_layout Itemize
+The original implementors of E
+\end_layout
+
+\begin_layout Itemize
 Em and Mike, for trailblazing
+\end_layout
+
+\begin_layout Itemize
+Dan Connelly for making awesome documentation (with diagrams!)
+\end_layout
+
+\begin_layout Itemize
+Everybody else in 
+\family typewriter
+#monte
+\family default
+ and 
+\family typewriter
+#erights
 \end_layout
 
 \begin_layout Slide
@@ -295,6 +313,14 @@ begin{description}
 
 
 \backslash
+item[LLVM] Mediocre GC control, poor JIT technology, and writing C++ drains
+ my soul
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
 item[GHC Haskell] Speedy and terse but mutation is hard
 \end_layout
 
@@ -302,7 +328,7 @@ item[GHC Haskell] Speedy and terse but mutation is hard
 
 
 \backslash
-item[C++] Speedy but very difficult to write, read, and maintain
+item[Bare/NIH C++] Speedy but very difficult to write, read, and maintain
 \end_layout
 
 \begin_layout Plain Layout
@@ -800,7 +826,7 @@ JIT Annotations, Cont.
 The JIT needs to know which loops to trace.
  Place 
 \family typewriter
-merge_point
+jit_merge_point
 \family default
  annotations at the head of each (user-level) loop.
 \end_layout
@@ -811,6 +837,10 @@ Any interpreter-level loop causes a function to be opaque to the JIT; it
  To fix this, use 
 \family typewriter
 unroll_safe
+\family default
+ or 
+\family typewriter
+look_inside_iff
 \family default
 , but be wary of code explosion.
 \end_layout
@@ -825,13 +855,17 @@ dont_look_inside
 \end_layout
 
 \begin_layout Itemize
-Some functions need to be opaque to preserve referential transparency (while
- caching or otherwise being impure).
+Some functions need to be opaque to preserve referential transparency.
  They are marked 
 \family typewriter
 elidable
 \family default
 .
+ There's also 
+\family typewriter
+_immutable_fields_
+\family default
+ for attributes.
 \end_layout
 
 \begin_layout Itemize
@@ -864,6 +898,85 @@ red
 green
 \color inherit
  value; the JIT usually emits a guard.
+\end_layout
+
+\begin_layout Slide
+Vats
+\end_layout
+
+\begin_layout Itemize
+Monte's threads of control are called 
+\series bold
+vats
+\series default
+.
+\end_layout
+
+\begin_layout Itemize
+Objects live in vats.
+\end_layout
+
+\begin_layout Itemize
+Vats send messages to other vats; objects send messages to other objects.
+ All vats are independently managed.
+\end_layout
+
+\begin_layout Itemize
+Concurrency and parallelism should be a snap! Just gotta reinvent Twisted,
+ which isn't RPython-compatible…
+\end_layout
+
+\begin_layout Slide
+FFI
+\end_layout
+
+\begin_layout Itemize
+RPython has FFI for C (
+\begin_inset Quotes eld
+\end_inset
+
+rffi
+\begin_inset Quotes erd
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Violates Monte's safety guarantees, so only used sparingly (sorry libpng)
+\end_layout
+
+\begin_layout Itemize
+libuv
+\end_layout
+
+\begin_layout Itemize
+libsodium, someday in the future
+\end_layout
+
+\begin_layout Section
+Final Thoughts
+\end_layout
+
+\begin_layout Slide
+Should you use RPython?
+\end_layout
+
+\begin_layout Standard
+If you're writing an interpreter, and you want it to go fast, and you don't
+ want to write Java or C++, then yes, consider it.
+\end_layout
+
+\begin_layout Standard
+RPython's competitors are generally worth considering too.
+\end_layout
+
+\begin_layout Slide
+Questions?
+\end_layout
+
+\begin_layout Standard
+Thanks!
 \end_layout
 
 \begin_layout EndSlide
