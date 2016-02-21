@@ -1,3 +1,3 @@
 # monte-talks
 
-Talks about Monte.
+Talks about Monte and stuff.

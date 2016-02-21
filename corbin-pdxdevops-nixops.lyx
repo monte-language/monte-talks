@@ -1,0 +1,251 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass powerdot
+\options style=horatio
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format pdf
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+NixOps is Pretty Cool
+\end_layout
+
+\begin_layout Author
+Corbin Simpson
+\end_layout
+
+\begin_layout Date
+February 24, 2016
+\end_layout
+
+\begin_layout Slide
+What's Nix?
+\end_layout
+
+\begin_layout Itemize
+A build system
+\end_layout
+
+\begin_layout Itemize
+A package manager
+\end_layout
+
+\begin_layout Itemize
+A Linux distribution
+\end_layout
+
+\begin_layout Itemize
+A continuous integration system
+\end_layout
+
+\begin_layout Itemize
+An orchestration system
+\end_layout
+
+\begin_layout Slide
+The Nix Language
+\end_layout
+
+\begin_layout Itemize
+Strength through purity
+\end_layout
+
+\begin_layout Itemize
+Principle of Least Authority (POLA)
+\end_layout
+
+\begin_layout Itemize
+All builds are fully reproducible; all artifacts (
+\begin_inset Quotes eld
+\end_inset
+
+derivations
+\begin_inset Quotes erd
+\end_inset
+
+) have integrity checks
+\end_layout
+
+\begin_layout Itemize
+Full environment isolation: One Nix store can host many different versions
+ of packages
+\end_layout
+
+\begin_layout Itemize
+The language itself is idiosyncratic
+\end_layout
+
+\begin_layout Slide
+nixpkgs
+\end_layout
+
+\begin_layout Itemize
+Large MIT-licensed ports-style repository of Nix expressions
+\end_layout
+
+\begin_layout Itemize
+Around 30,000 packages total
+\end_layout
+
+\begin_layout Itemize
+Supported by custom tooling (pypi2nix, cabal2nix, cpan2nix, npm2nix, etc.)
+\end_layout
+
+\begin_layout Slide
+NixOS
+\end_layout
+
+\begin_layout Itemize
+Nix is the only package manager on the system
+\end_layout
+
+\begin_layout Itemize
+Fully declarative package management
+\end_layout
+
+\begin_layout Itemize
+Per-user package profiles and environments; users can install packages without
+ elevated privileges
+\end_layout
+
+\begin_layout Itemize
+Atomic system state changes; all upgrades are atomic and can be rolled back
+\end_layout
+
+\begin_layout Slide
+Hydra
+\end_layout
+
+\begin_layout Itemize
+Continuous integration technology designed for Nix
+\end_layout
+
+\begin_layout Itemize
+Simple design: Assemble Nix expressions and evaluate them, generating all
+ of the build artifacts as Nix derivations
+\end_layout
+
+\begin_layout Itemize
+Can be used as binary package and metatdata cache (
+\begin_inset Quotes eld
+\end_inset
+
+channel
+\begin_inset Quotes erd
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Slide
+NixOps
+\end_layout
+
+\begin_layout Itemize
+Describe a fleet of machines using Nix expressions
+\end_layout
+
+\begin_layout Itemize
+Orchestrate deployments
+\end_layout
+
+\begin_layout Itemize
+Orchestrated machines all run NixOS
+\end_layout
+
+\begin_layout Itemize
+Supports development and production deployment targets
+\end_layout
+
+\begin_layout Slide
+Obligatory Image Macro Slide
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename /home/simpson/nix-talk/seventh.png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Slide
+Questions?
+\end_layout
+
+\begin_layout Standard
+Thanks!
+\end_layout
+
+\begin_layout EndSlide
+
+\end_layout
+
+\end_body
+\end_document
