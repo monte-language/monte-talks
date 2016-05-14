@@ -15,6 +15,7 @@ def undot(specimen):
                 newDict[head] = values
             else:
                 newDict[k] = v
+        # And recurse.
         return {k: undot(v) for (k, v) in newDict.iteritems()}
     elif isinstance(specimen, list):
         return [undot(x) for x in specimen]
