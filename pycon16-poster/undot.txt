@@ -1,0 +1,7 @@
+"Undot" Algorithm
+
+This short and sweet algorithm was made up on the fly to decode
+Tahoe-LAFS-style JSON maps, which have this "dotted" naming scheme. Like all
+of these examples, this algorithm was first written in Monte, and then
+translated by hand to Python. Monte's pattern-matching and immutable data
+structures make this algorithm easy to read.

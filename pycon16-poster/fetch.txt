@@ -1,0 +1,4 @@
+HTTP Fetch
+
+This example shows off both Monte's disdain for ambient authority and its
+strong builtin concurrency primitives.

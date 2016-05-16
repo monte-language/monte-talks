@@ -1,0 +1,5 @@
+Q Sequence
+
+This is a straightforward memoized verion of Hofstadter's Q sequence. Monte
+and Python have the same solution to the problem, and so they share the same
+code structure.

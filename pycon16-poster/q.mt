@@ -2,8 +2,8 @@ exports (main)
 
 def main(_) as DeepFrozen:
     def seq := [null, 1, 1].diverge()
-    def q(n :Int):
-        var next := seq.size()
+    def q(n :Int) :Int:
+        var next :Int := seq.size()
         while (n >= next):
             seq.push(seq[next - seq[next - 1]] + seq[next - seq[next - 2]])
             next += 1

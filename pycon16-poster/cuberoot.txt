@@ -1,0 +1,6 @@
+Cube Root
+
+A straightforward application of Newton's method retrieves reasonably-accurate
+cube roots. Since Python and Monte both use IEEE 754 double-precision
+floating-point numbers, the same algorithm computes the same results in both
+languages. (Including the buggy behavior on extremely large input values.)
