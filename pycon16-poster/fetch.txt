@@ -1,4 +1,20 @@
 HTTP Fetch
 
 This example shows off both Monte's disdain for ambient authority and its
-strong builtin concurrency primitives.
+strong builtin concurrency primitives. The Python `requests` library makes
+this example look verbose in comparison, but the verbosity is merely a product
+of the explicit authority which Monte requires for unsafe operations. 
+
+Our entrypoint `main` requests two unsafe capabilities via keyword argument:
+`getAddrInfo`, which corresponds to `getaddrinfo()` at the OS layer, and
+`makeTCP4ClientEndpoint`, a maker of endpoints which can create IPv4 TCP
+clients. Outside of these capabilities, this entrypoint cannot misbehave in
+certain ways; it cannot access the filesystem, spawn subprocesses, nor even
+access the runtime utilities of the current process.
+
+We use `when` expressions to control concurrency. The `->` arrow indicates a
+block of actions that will happen after the promise at the head of the `when`
+expression resolves. In this example, we have two promises that we wait for.
+First, we wait for `getAddrInfo` to perform a DNS lookup. (Or other equivalent
+blocking long-running I/O.) Then, we use the results of that lookup to perform
+an HTTP request.
