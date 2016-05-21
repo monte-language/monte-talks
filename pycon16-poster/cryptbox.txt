@@ -1,0 +1,12 @@
+Cryptographic Sealing
+
+This example features bindings to `libsodium` to create a relatively compact
+single-file encryption tool, based on `libsodium` boxes.
+
+The `<-` syntax turns calls into eventual sends, which will result in deferred
+computation. Like `when` expressions, eventual sends are executed sometime
+after the computation that prepares them.
+
+`switch` expressions perform pattern-matching against a sequence of patterns.
+Here, the specimen `argv`, representing command-line arguments, is
+deconstructed into an operation and positional parameters.
