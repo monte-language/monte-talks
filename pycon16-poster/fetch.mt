@@ -8,7 +8,8 @@ def main(argv, => getAddrInfo, => makeTCP4ClientEndpoint) as DeepFrozen:
     return when (addrs) ->
         def gai := makeGAI(addrs)
         def [addr] + _ := gai.TCP4()
-        def response := makeRequest(makeTCP4ClientEndpoint, addr.getAddress(), "/").get()
+        def response := makeRequest(makeTCP4ClientEndpoint, addr.getAddress(),
+                                    "/").get()
         when (response) ->
             traceln(response)
             traceln(UTF8.decode(response.body(), null))
