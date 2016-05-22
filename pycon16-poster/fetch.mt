@@ -1,4 +1,4 @@
-import "lib/codec/utf8" =~  [=> UTF8 :DeepFrozen]
+import "lib/codec/utf8" =~ [=> UTF8 :DeepFrozen]
 import "lib/gai" =~ [=> makeGAI :DeepFrozen]
 import "http/client" =~ [=> makeRequest :DeepFrozen]
 exports (main)
