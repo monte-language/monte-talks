@@ -4,7 +4,7 @@
 \begin_header
 \save_transient_properties true
 \origin unavailable
-\textclass amsart
+\textclass article
 \use_default_options true
 \begin_modules
 theorems-ams
@@ -84,14 +84,13 @@ Monte: A Spiritual Successor to E
 Corbin Simpson
 \end_layout
 
-\begin_layout Email
-cds@corbinsimpson.com
-\end_layout
-
 \begin_layout Abstract
-We boast about features in Monte, an object-based capability-safe programming
- language modeled closely after the E programming language.
- We examine four features: named arguments, iterators, modules, and controllers.
+We introduce Monte, a capability-safe programming language in the style
+ of E.
+ We detail several of Monte's differences from E, including new syntax,
+ several new interfaces, and a simple module model.
+ In particular, we examine four features: named arguments, iterators, modules,
+ and controllers.
 \end_layout
 
 \begin_layout Section
@@ -337,7 +336,7 @@ At the highest level, a module is a source file with a header which indicates
  After compilation, the module can be given a name and composed with other
  modules by piping exports to imports.
  The composition is performed by a module loader, which is a plain Monte
- expression empowered to load code objects.q
+ expression empowered to load code objects.
 \begin_inset CommandInset include
 LatexCommand lstinputlisting
 filename "/home/simpson/typhon/mast/lib/entropy/pi.mt"
@@ -415,9 +414,373 @@ lambda-args
 \end_inset
 
  syntax.
- In particular, we have found that computations which carry an implicit
- context or effect can be well-modeled with the syntax, and so we have adapted
- it for Monte.
+ In particular,we have found that computations which carry an implicit context
+ or effect can be well-modeled with the syntax, and so we have adapted it
+ for Monte, dubbing this syntax the controller interface.
+\end_layout
+
+\begin_layout Subsection
+Introduction
+\end_layout
+
+\begin_layout Standard
+A controller is a DeepFrozen object which can build a plan incrementally
+ from small program fragments and instructions.
+ The plan is encoded syntactically.
+ A listing is worth a thousand words.
+ Here is a controller in Full-Monte:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+controller (in0, …, ini) do arg0, …, argj { action() }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And the same controller, with only controller syntax desugared:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+(controller :DeepFrozen).control("do", i, j, fn {
+\end_layout
+
+\begin_layout Plain Layout
+
+  [[in0, …, ini], fn param0, …, paramj, ej {
+\end_layout
+
+\begin_layout Plain Layout
+
+    def [arg0, …, argj] exit ej := [param0, …, paramj]
+\end_layout
+
+\begin_layout Plain Layout
+
+    action()
+\end_layout
+
+\begin_layout Plain Layout
+
+  }]
+\end_layout
+
+\begin_layout Plain Layout
+
+}).controlRun()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This controller receives a single command, consisting of an instruction
+ 
+\begin_inset Quotes eld
+\end_inset
+
+do
+\begin_inset Quotes erd
+\end_inset
+
+, an arity 
+\begin_inset Formula $i$
+\end_inset
+
+ of inputs 
+\begin_inset Formula $[in_{0},in_{1},\dots,in_{i}]$
+\end_inset
+
+, an arity 
+\begin_inset Formula $j$
+\end_inset
+
+ of arguments 
+\begin_inset Formula $[arg_{0},arg_{1},\dots,arg_{j}]$
+\end_inset
+
+, and a thunk known as the block.
+ When called, the block returns a pair containing a list of all 
+\begin_inset Formula $i$
+\end_inset
+
+ inputs and another thunk, known as the lambda.
+ The lambda is the user-provided part of the plan; when called, it will
+ take in 
+\begin_inset Formula $j$
+\end_inset
+
+ parameters and run the user-specified action.
+ The controller is expected to generate a plan based on the contents of
+ the block; the plan will probably call the block, extract the inputs, pass
+ the inputs to the lambda, and return the lambda's return value.
+ Since the block and lambda are both thunks, they may be called zero-or-more
+ times based on the design of the controller.
+\end_layout
+
+\begin_layout Subsection
+Monads
+\end_layout
+
+\begin_layout Standard
+Monadic actions can be fully captured by controllers.
+ Compare and contrast the following Haskell:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+return 42 >>= 
+\backslash
+x -> do {
+\end_layout
+
+\begin_layout Plain Layout
+
+  return $ x + 1
+\end_layout
+
+\begin_layout Plain Layout
+
+} >>= 
+\backslash
+x -> do {
+\end_layout
+
+\begin_layout Plain Layout
+
+  return $ x * 2
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With the following Monte:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+m (m.unit(42)) do x {
+\end_layout
+
+\begin_layout Plain Layout
+
+  m.unit(x + 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+} lift x {
+\end_layout
+
+\begin_layout Plain Layout
+
+  x * 2
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We must pass our monad controller 
+\begin_inset Formula $m$
+\end_inset
+
+ since we have neither implicit parameters nor typeclasses.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+do
+\begin_inset Quotes erd
+\end_inset
+
+ instruction takes some values extracted from the monadic context and returns
+ a monadic action.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+lift
+\begin_inset Quotes erd
+\end_inset
+
+ instruction is similar, but performs an automatic unit wrapping to return
+ to the monadic context.
+\end_layout
+
+\begin_layout Subsection
+Kanren
+\end_layout
+
+\begin_layout Standard
+Logic programming can be difficult without a domain-specific language.
+ The Kanren family, including miniKanren and µKanren, is a popular choice
+ for embedding logic programming into general-purpose languages.
+\end_layout
+
+\begin_layout Standard
+We can construct a Kanren program from a controller.
+ This simple program creates two logic variables, 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+, and asserts that 
+\begin_inset Formula $x\equiv\text{true}\land x\equiv y$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+kanren () exists x, y {
+\end_layout
+
+\begin_layout Plain Layout
+
+  kanren.unify(x, true)
+\end_layout
+
+\begin_layout Plain Layout
+
+  kanren.unify(x, y)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When values are extracted from this program, there will be one satisfying
+ assignment, where both 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ are assigned true.
+\end_layout
+
+\begin_layout Standard
+While the 
+\begin_inset Quotes eld
+\end_inset
+
+exists
+\begin_inset Quotes erd
+\end_inset
+
+ instruction might be the main workhorse for program fragments, our Kanren
+ controller is also capable of composing logic programs.
+ In this example from real-world code, we compose many fragments of logic
+ at the edges of a sheaf into a single coherent assignment, using the 
+\begin_inset Quotes eld
+\end_inset
+
+forAll
+\begin_inset Quotes erd
+\end_inset
+
+ instruction to unify a list of logic variables:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+kanren (fullSection) forAll v, value {
+\end_layout
+
+\begin_layout Plain Layout
+
+  kanren.unify(vars[index[v]], value)                
+\end_layout
+
+\begin_layout Plain Layout
+
+} (consistency) forAll vs, goalMaker {
+\end_layout
+
+\begin_layout Plain Layout
+
+  def swizzle := [for v in (vs) vars[index[v]]]             
+\end_layout
+
+\begin_layout Plain Layout
+
+  M.call(goalMaker, "run", swizzle, [].asMap())
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
