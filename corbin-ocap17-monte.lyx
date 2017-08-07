@@ -5,6 +5,9 @@
 \save_transient_properties true
 \origin unavailable
 \textclass article
+\begin_preamble
+\usepackage{url}
+\end_preamble
 \use_default_options true
 \begin_modules
 theorems-ams
@@ -89,8 +92,8 @@ We introduce Monte, a capability-safe programming language in the style
  of E.
  We detail several of Monte's differences from E, including new syntax,
  several new interfaces, and a simple module model.
- In particular, we examine four features: named arguments, iterators, modules,
- and controllers.
+ In particular, we examine four features and their consequences for secure
+ distributed computing: named arguments, iterators, modules, and controllers.
 \end_layout
 
 \begin_layout Section
@@ -123,32 +126,6 @@ Named Arguments
 \begin_layout Standard
 In addition to positional arguments, Monte supports passing arguments keyed
  by name.
- The keys can be arbitrary objects:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-object namedKey {}
-\end_layout
-
-\begin_layout Plain Layout
-
-def requireKey((namedKey) => value):
-\end_layout
-
-\begin_layout Plain Layout
-
-    return value
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -234,6 +211,78 @@ Under the hood, Monte accomodates all of this functionality with a very
  simple change of semantics.
  In E, a message is [verb :Str, args :List].
  However, in Monte, a message is [verb :Str, args :List, namedArgs :Map].
+\end_layout
+
+\begin_layout Subsection
+Locked Methods
+\end_layout
+
+\begin_layout Standard
+The keys can be arbitrary objects.
+ Indeed, consider what happens when a closely-held object is used as a key:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+object sesame {}
+\end_layout
+
+\begin_layout Plain Layout
+
+object riches {}
+\end_layout
+
+\begin_layout Plain Layout
+
+def cave((sesame) => _):
+\end_layout
+
+\begin_layout Plain Layout
+
+    return riches
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This function can only be called when the caller passes the right key, and
+ otherwise it will not perform any effects in the method body.
+ Since the key is passed as a named argument, it won't interfere with any
+ other arguments.
+ Therefore, we can apply this pattern to any method.
+ We call this the 
+\begin_inset Quotes eld
+\end_inset
+
+locked method
+\begin_inset Quotes erd
+\end_inset
+
+ pattern since the method's named parameter is like a lock to which the
+ key is applied.
+\end_layout
+
+\begin_layout Standard
+Locked methods are largely equivalent in functionality to sealed dispatch,
+ where a brand is passed to the ._sealedDispatch() Miranda method.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "MonteMiranda"
+
+\end_inset
+
+ However, there are key differences that hint at different use cases.
+ Locked methods are not as suavely clandestine as sealed dispatch, since
+ they form part of the default alleged interface.
 \end_layout
 
 \begin_layout Section
@@ -348,7 +397,11 @@ Modules
 
 \begin_layout Standard
 A Monte module is both a compilation unit and a composable code unit.
- We replace E URI imports and maker files with a uniform module interface.
+ We replace E URI-getters and maker files with a uniform module interface.
+\end_layout
+
+\begin_layout Subsection
+Imports & Exports
 \end_layout
 
 \begin_layout Standard
@@ -358,38 +411,175 @@ At the highest level, a module is a source file with a header which indicates
  modules by piping exports to imports.
  The composition is performed by a module loader, which is a plain Monte
  expression empowered to load code objects.
-\begin_inset CommandInset include
-LatexCommand lstinputlisting
-filename "/home/simpson/typhon/mast/lib/entropy/pi.mt"
-lstparams "inputencoding=utf8,extendedchars=true,caption={lib/entropy/pi.mt from the Typhon standard library}"
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
-Consider this short real module from the Typhon interpreter's standard library.
- It imports from two modules, and exports a single name which can be imported
- elsewhere.
- While the module is named 
+Module syntax is relatively light.
+ Here is a complete, if facetious, module which imports from 
 \begin_inset Quotes eld
 \end_inset
 
-lib/entropy/pi
+lib/iterators
 \begin_inset Quotes erd
 \end_inset
 
- by its filename, that name doesn't appear in the module itself; modules
- are anonymous to themselves.
+ and exports a single name, 
+\begin_inset Quotes eld
+\end_inset
+
+zipSum
+\begin_inset Quotes erd
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Standard
-Module exports must conform to DeepFrozen.
- As a result, imported names often must be guarded by DeepFrozen.
- We can make an exception for unit tests because they can be treated as
- impure effects executed on import; this doesn't alter the module formalism
- at all, just the module loader.
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+import "lib/iterators" =~ [=> zip :DeepFrozen]
+\end_layout
+
+\begin_layout Plain Layout
+
+exports (zipSum)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def zipSum(left :List, right :List) :List as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  return [for [l, r] in (zip(left, right)) l + r]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Expanding only the module syntax, the structure of a module is revealed
+ to be a simple anonymous object:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+object _ as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  to dependencies() :List[Str]:
+\end_layout
+
+\begin_layout Plain Layout
+
+    return ["lib/iterators"]
+\end_layout
+
+\begin_layout Plain Layout
+
+  to run(package) :Map[Str, DeepFrozen]:
+\end_layout
+
+\begin_layout Plain Layout
+
+    def [=> zip :DeepFrozen] | _ := package."import"("lib/iterators")
+\end_layout
+
+\begin_layout Plain Layout
+
+    def zipSum(left :List, right :List) :List as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+      return [for [l, r] in (zip(left, right)) l + r]
+\end_layout
+
+\begin_layout Plain Layout
+
+    return [=> zipSum]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+While arbitrary patterns are allowed in imports, we encourage a convention
+ of map-patterns.
+ Notice that we expand 
+\begin_inset Quotes eld
+\end_inset
+
+[=> zip :DeepFrozen]
+\begin_inset Quotes erd
+\end_inset
+
+ into 
+\begin_inset Quotes eld
+\end_inset
+
+[=> zip :DeepFrozen] | _
+\begin_inset Quotes erd
+\end_inset
+
+, which is a convenience that both allows users to import only needed names
+ and also allows for modules to add new exports without breaking users,
+ making it easier to expand a module's interface without breaking compatibility.
+\end_layout
+
+\begin_layout Subsection
+DeepFrozen Exports
+\end_layout
+
+\begin_layout Standard
+In Monte, module exports must conform to DeepFrozen.
+ This constraint forces modules to do any impure or mutable computation
+ prior to freezing and returning exported values.
+\end_layout
+
+\begin_layout Standard
+There are several boons to the DeepFrozen requirement.
+ Like E makers, Monte modules can be cached and composed.
+ Module composition proceeds with the assistance of a module loader, which
+ is a short routine that loads modules and incrementally executes them,
+ routing exports to imports.
+\end_layout
+
+\begin_layout Standard
+There are some difficulties, too.
+ In particular, imported names often must be guarded by DeepFrozen, which
+ is an irritating syntactic burden.
+ The only common exception is importing from the special 
+\begin_inset Quotes eld
+\end_inset
+
+unittest
+\begin_inset Quotes erd
+\end_inset
+
+ name, which produces an effect on import in order to run unit tests.
+ Such impure effects executed on import don't alter the module formalism
+ at all, just the implementation of the module loader.
  The impurity of the loader also lets us cache and reuse modules as plain
  objects, so that modules which occur often in the module dependency graph
  can be reused.
@@ -400,8 +590,7 @@ Entrypoints
 \end_layout
 
 \begin_layout Standard
-To replace E's URI lookup mechanism, we instead designate the export name
- 
+To replace E's URI getters, we instead designate the exported name 
 \begin_inset Quotes eld
 \end_inset
 
@@ -488,11 +677,14 @@ def main(argv :List[Str],
 
 \begin_layout Standard
 We can consider the broad capabilities of this program entirely by considering
- its unsafe named arguments in the entrypoint:
+ its unsafe named arguments in the entrypoint.
+ As we do so, we can imagine a code reviewer's rationale for each name:
 \end_layout
 
 \begin_layout Description
 Timer It can read the system clock and measure time taken during vat turns.
+ This is needed to provide a wall-clock IRC message throttle, so that messages
+ aren't lost and the bot isn't kicked.
 \end_layout
 
 \begin_layout Description
@@ -504,18 +696,22 @@ currentRuntime It can access various runtime-specific capabilities.
 
 \begin_layout Description
 getAddrInfo It can resolve hostnames using the system DNS configuration.
+ This is needed to find IRC server addresses.
 \end_layout
 
 \begin_layout Description
 makeFileResource It can read and write to the filesystem.
+ This is needed for storing todo lists.
 \end_layout
 
 \begin_layout Description
 makeTCP4ClientEndpoint It can create TCP/IPv4 outgoing connections.
+ This is needed to connect to IRC.
 \end_layout
 
 \begin_layout Description
 unsealException It can examine exceptions caught by try-expressions.
+ This is needed for REPL functionality.
 \end_layout
 
 \begin_layout Standard
@@ -913,6 +1109,33 @@ kanren (fullSection) forAll v, value {
 
 }
 \end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "corbin-ocap17-monte"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Example Monte Module
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "/home/simpson/typhon/mast/lib/entropy/pi.mt"
+lstparams "inputencoding=utf8,extendedchars=true,caption={lib/entropy/pi.mt from the Typhon standard library}"
 
 \end_inset
 
