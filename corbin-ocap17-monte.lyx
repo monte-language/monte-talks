@@ -321,6 +321,27 @@ def oddInts := [for i in (0..!stop) ? (i % 2 == 1) i]
 
 \end_layout
 
+\begin_layout Standard
+Here, the 
+\begin_inset Quotes eld
+\end_inset
+
+?
+\begin_inset Quotes erd
+\end_inset
+
+ should be read as 
+\begin_inset Quotes eld
+\end_inset
+
+such-that
+\begin_inset Quotes erd
+\end_inset
+
+, just like in such-that patterns, and performs a filtering operation, skipping
+ iterations where the such-that condition fails.
+\end_layout
+
 \begin_layout Section
 Modules
 \end_layout
@@ -374,6 +395,10 @@ Module exports must conform to DeepFrozen.
  can be reused.
 \end_layout
 
+\begin_layout Subsection
+Entrypoints
+\end_layout
+
 \begin_layout Standard
 To replace E's URI lookup mechanism, we instead designate the export name
  
@@ -400,12 +425,123 @@ run
  large.
 \end_layout
 
+\begin_layout Standard
+This interface permits easy examination of coarse OS-level capabilities,
+ akin to BSD pledge()/tame().
+ Consider the following entrypoint, from an IRC client:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def main(argv :List[Str],
+\end_layout
+
+\begin_layout Plain Layout
+
+         => Timer,
+\end_layout
+
+\begin_layout Plain Layout
+
+         => currentRuntime,
+\end_layout
+
+\begin_layout Plain Layout
+
+         => getAddrInfo,
+\end_layout
+
+\begin_layout Plain Layout
+
+         => makeFileResource,
+\end_layout
+
+\begin_layout Plain Layout
+
+         => makeTCP4ClientEndpoint,
+\end_layout
+
+\begin_layout Plain Layout
+
+         => unsealException) :Vow[Int] as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  …
+\end_layout
+
+\begin_layout Plain Layout
+
+  return 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can consider the broad capabilities of this program entirely by considering
+ its unsafe named arguments in the entrypoint:
+\end_layout
+
+\begin_layout Description
+Timer It can read the system clock and measure time taken during vat turns.
+\end_layout
+
+\begin_layout Description
+currentRuntime It can access various runtime-specific capabilities.
+ This object is meant for staging non-standard platform-specific functionality.
+ In this particular case, Typhon exports a non-standard cryptographic interface
+ based on libsodium via currentRuntime.getCrypt().
+\end_layout
+
+\begin_layout Description
+getAddrInfo It can resolve hostnames using the system DNS configuration.
+\end_layout
+
+\begin_layout Description
+makeFileResource It can read and write to the filesystem.
+\end_layout
+
+\begin_layout Description
+makeTCP4ClientEndpoint It can create TCP/IPv4 outgoing connections.
+\end_layout
+
+\begin_layout Description
+unsealException It can examine exceptions caught by try-expressions.
+\end_layout
+
+\begin_layout Standard
+Most of these unsafe powers have been well-studied, although the ability
+ to unseal exceptions has traditionally not been separated and treated as
+ unsafe.
+\end_layout
+
+\begin_layout Standard
+In addition to the unsafe named parameters, an entrypoint is also passed
+ a list of input strings and should return an integer indicating success
+ or otherwise, as is traditional.
+ One change from tradition, however, is the ability to return a promise
+ for an integer instead.
+ This enables an entrypoint to implicitly indicate that it has more turns
+ pending before it will be finished running.
+ This design is based on Twisted Python's twisted.internet.task.react() helper,
+ which was designed to make it easier to produce Twisted-compatible entrypoints.
+\end_layout
+
 \begin_layout Section
 Controllers
 \end_layout
 
 \begin_layout Standard
-We have experienced use cases for the E experimental 
+We have experienced use cases for the experimental 
 \begin_inset Quotes eld
 \end_inset
 
@@ -413,10 +549,10 @@ lambda-args
 \begin_inset Quotes erd
 \end_inset
 
- syntax.
- In particular,we have found that computations which carry an implicit context
- or effect can be well-modeled with the syntax, and so we have adapted it
- for Monte, dubbing this syntax the controller interface.
+ syntax suggested for E.
+ In particular, we have found that computations which carry an implicit
+ context or effect can be well-modeled with the syntax, and so we have adapted
+ it for Monte, dubbing this syntax the controller interface.
 \end_layout
 
 \begin_layout Subsection
