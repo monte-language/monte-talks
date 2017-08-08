@@ -290,7 +290,60 @@ Iterators
 
 \begin_layout Standard
 E has internal iteration.
- Monte has explicit iterators instead, with an iterable protocol:
+ Monte has external iteration and explicit iterator objects instead:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def iter := makeIterator()
+\end_layout
+
+\begin_layout Plain Layout
+
+escape noMoreItems:
+\end_layout
+
+\begin_layout Plain Layout
+
+  traceln(iter.next(noMoreItems))
+\end_layout
+
+\begin_layout Plain Layout
+
+catch _:
+\end_layout
+
+\begin_layout Plain Layout
+
+  traceln("Iterator is exhausted")
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Under the hood, for-loops and while-loops use iterators with the help of
+ the loop() combinator.
+ The iterator protocol consists of just one method, .next/1.
+ Iterators accept an ejector and either return a pair of values or fire
+ the ejector.
+ There is also an iterable protocol, similar to Python's iterable protocol,
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "PythonIterable"
+
+\end_inset
+
+ consisting of another single method, ._makeIterator/0, which merely makes
+ iterators:
 \end_layout
 
 \begin_layout Standard
@@ -334,10 +387,11 @@ def counter._makeIterator():
 \end_layout
 
 \begin_layout Standard
-These two methods, ._makeIterator/0 and .next/1, are the entire protocol.
- Iterators may call the passed-in ejector to end iteration, or they may
- return a pair.
- Iteration always proceeds over pairs.
+These two methods are the entirety of the iterator API.
+\end_layout
+
+\begin_layout Standard
+Iteration always proceeds over pairs.
  The first element of the pair is usually a key or index, while the second
  element is a keyed value or datum.
  Iteration over lists yields pairs of indices and values, like Python's
