@@ -6,7 +6,7 @@
 \origin unavailable
 \textclass article
 \begin_preamble
-\usepackage{url}
+\usepackage{hyperref}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -114,9 +114,8 @@ object-capability
  security model).
  Also like E, Monte expands from a rich sugared language, Full-Monte, to
  a strict subset, Kernel-Monte.
- In fact, Kernel-Monte is almost exactly like Kernel-E, and we discuss named
- arguments and iterators, the two largest divergences that Kernel-Monte
- makes from Kernel-E.
+ In this paper, we will introduce several facets of Monte, including Kernel-Mont
+e expansions and applications to secure distributed computing.
 \end_layout
 
 \begin_layout Section
@@ -615,8 +614,15 @@ run
 \end_layout
 
 \begin_layout Standard
-This interface permits easy examination of coarse OS-level capabilities,
- akin to BSD pledge()/tame().
+This interface permits easy examination of coarse OS-level capabilities
+ during code review, akin to OpenBSD pledge().
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "pledge2"
+
+\end_inset
+
  Consider the following entrypoint, from an IRC client:
 \end_layout
 
@@ -990,6 +996,14 @@ Kanren
 Logic programming can be difficult without a domain-specific language.
  The Kanren family, including miniKanren and µKanren, is a popular choice
  for embedding logic programming into general-purpose languages.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kanren"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
