@@ -7,12 +7,30 @@
 \textclass article
 \begin_preamble
 \usepackage{hyperref}
+
+\usepackage{listings}
+\lstdefinelanguage{Monte}
+{
+  morekeywords={
+    [2]as,bind,def,else,escape,[2]exit,[2]extends,[2]guards,[2]implements,
+    [2]in,[2]method,pass,var,via,
+    exports,import,
+    fn,interface,object,[2]to,
+    catch,if,finally,for,[2]match,switch,try,when,while,
+    break,continue,return},
+  sensitive=false,
+  morestring=[b]',
+  morestring=[b]",
+  morecomment=[l]{\#}
+}
+\lstset{language=Monte}
 \end_preamble
 \use_default_options true
 \begin_modules
 theorems-ams
 eqs-within-sections
 figs-within-sections
+logicalmkup
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -208,8 +226,28 @@ def adjustAndPad(adjustment, => padding :Str := " "):
 \begin_layout Standard
 Under the hood, Monte accomodates all of this functionality with a very
  simple change of semantics.
- In E, a message is [verb :Str, args :List].
- However, in Monte, a message is [verb :Str, args :List, namedArgs :Map].
+ In E, a message always conforms to 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+[verb :Str, args :List]
+\end_layout
+
+\end_inset
+
+.
+ However, in Monte, a message conforms to 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+[verb :Str, args :List, namedArgs :Map]
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -271,7 +309,17 @@ locked method
 
 \begin_layout Standard
 Locked methods are largely equivalent in functionality to sealed dispatch,
- where a brand is passed to the ._sealedDispatch() Miranda method.
+ where a brand is passed to the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+._sealedDispatch/1
+\end_layout
+
+\end_inset
+
+ Miranda method.
  
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -279,9 +327,10 @@ key "MonteMiranda"
 
 \end_inset
 
- However, there are key differences that hint at different use cases.
- Locked methods are not as suavely clandestine as sealed dispatch, since
- they form part of the default alleged interface.
+ However, there are key differences that hint at different use cases, and
+ in general, we do not recommend ever using locked methods in favor of sealed
+ dispatch.
+ We document the technique here for completeness only.
 \end_layout
 
 \begin_layout Section
@@ -333,6 +382,91 @@ Iterators intrinsically permit pausing iteration.
  For example, Monte Kanren logic programs can be turned into iterables.
 \end_layout
 
+\begin_layout Itemize
+Composition of iterators is relatively simple; the classic 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+zip()
+\end_layout
+
+\end_inset
+
+ function can be written incorrectly in fewer than ten lines:
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def zip(left, right) as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  return def zipper._makeIterator():
+\end_layout
+
+\begin_layout Plain Layout
+
+    def l := left._makeIterator()
+\end_layout
+
+\begin_layout Plain Layout
+
+    def r := right._makeIterator()
+\end_layout
+
+\begin_layout Plain Layout
+
+    var counter := 0
+\end_layout
+
+\begin_layout Plain Layout
+
+    return def iterator.next(ej):
+\end_layout
+
+\begin_layout Plain Layout
+
+      def rv := [counter, [l(ej), r(ej)]]
+\end_layout
+
+\begin_layout Plain Layout
+
+      counter += 1
+\end_layout
+
+\begin_layout Plain Layout
+
+      return rv
+\end_layout
+
+\end_inset
+
+(A correct version of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+zip()
+\end_layout
+
+\end_inset
+
+ can be found in the Typhon 
+\begin_inset Quotes eld
+\end_inset
+
+lib/iterators
+\begin_inset Quotes erd
+\end_inset
+
+ module, handling arbitrary numbers of arguments, iterables of unequal length,
+ and other expected features.)
+\end_layout
+
 \begin_layout Subsection
 Interface
 \end_layout
@@ -378,10 +512,28 @@ catch _:
 
 \begin_layout Standard
 Under the hood, for-loops and while-loops use iterators with the help of
- the loop() combinator.
- The iterator protocol consists of just one method, .next/1.
- Iterators accept an ejector and either return a pair of values or fire
- the ejector.
+ the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+_loop()
+\end_layout
+
+\end_inset
+
+ combinator.
+ The iterator protocol consists of just one method, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+.next/1
+\end_layout
+
+\end_inset
+
+, which accepts an ejector and either returns a pair of values or ejects.
  There is also an iterable protocol, similar to Python's iterable protocol,
  
 \begin_inset CommandInset citation
@@ -390,8 +542,17 @@ key "PythonIterable"
 
 \end_inset
 
- consisting of another single method, ._makeIterator/0, which merely makes
- iterators:
+ consisting of another single method, 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+._makeIterator/0
+\end_layout
+
+\end_inset
+
+, which merely makes iterators:
 \end_layout
 
 \begin_layout Standard
@@ -443,7 +604,17 @@ Iteration always proceeds over pairs.
  The first element of the pair is usually a key or index, while the second
  element is a keyed value or datum.
  Iteration over lists yields pairs of indices and values, like Python's
- enumerate().
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+enumerate()
+\end_layout
+
+\end_inset
+
+.
  Iteration over maps yields key-value pairs.
 \end_layout
 
@@ -524,7 +695,7 @@ lib/iterators
 \begin_inset Quotes erd
 \end_inset
 
- and exports a single name, 
+ and exports a single named value, 
 \begin_inset Quotes eld
 \end_inset
 
@@ -627,20 +798,24 @@ object _ as DeepFrozen:
 \begin_layout Standard
 While arbitrary patterns are allowed in imports, we encourage a convention
  of map-patterns.
- Notice that we expand 
-\begin_inset Quotes eld
-\end_inset
+ Notice that we expand the import map-pattern 
+\begin_inset Flex Code
+status open
 
+\begin_layout Plain Layout
 [=> zip :DeepFrozen]
-\begin_inset Quotes erd
+\end_layout
+
 \end_inset
 
  into 
-\begin_inset Quotes eld
-\end_inset
+\begin_inset Flex Code
+status open
 
+\begin_layout Plain Layout
 [=> zip :DeepFrozen] | _
-\begin_inset Quotes erd
+\end_layout
+
 \end_inset
 
 , which is a convenience that both allows users to import only needed names
@@ -700,7 +875,12 @@ main
 \end_inset
 
  as an entrypoint for modules.
- To run an entrypoint, we pass it a message [
+ To run an entrypoint, we call it with a message 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+[
 \begin_inset Quotes eld
 \end_inset
 
@@ -708,7 +888,22 @@ run
 \begin_inset Quotes erd
 \end_inset
 
-, argv :List[Str], unsafeScope :Map] and expect a Vow[Int].
+, [argv :List[Str]], unsafeScope :Map]
+\end_layout
+
+\end_inset
+
+, expecting a 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+Vow[Int]
+\end_layout
+
+\end_inset
+
+ in return.
  The return value and list of arguments parallel the classic inputs and
  outputs to an OS process, while the unsafe scope consists of all of the
  primitive powers which the loader is willing to grant to the program at
@@ -717,7 +912,17 @@ run
 
 \begin_layout Standard
 This interface permits easy examination of coarse OS-level capabilities
- during code review, akin to OpenBSD pledge().
+ during code review, akin to the OpenBSD 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+pledge()
+\end_layout
+
+\end_inset
+
+ syscall.
  
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -725,7 +930,7 @@ key "pledge2"
 
 \end_inset
 
- Consider the following entrypoint, from an IRC client:
+ Consider the following entrypoint, from a real-world IRC client:
 \end_layout
 
 \begin_layout Standard
@@ -800,6 +1005,7 @@ currentRuntime It can access various runtime-specific capabilities.
  This object is meant for staging non-standard platform-specific functionality.
  In this particular case, Typhon exports a non-standard cryptographic interface
  based on libsodium via currentRuntime.getCrypt().
+ This is needed for cryptography services.
 \end_layout
 
 \begin_layout Description
@@ -836,8 +1042,26 @@ In addition to the unsafe named parameters, an entrypoint is also passed
  for an integer instead.
  This enables an entrypoint to implicitly indicate that it has more turns
  pending before it will be finished running.
- This design is based on Twisted Python's twisted.internet.task.react() helper,
- which was designed to make it easier to produce Twisted-compatible entrypoints.
+ This design is based on Twisted Python's 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+twisted.internet.task.react()
+\end_layout
+
+\end_inset
+
+ helper, which was designed to make it easier to produce Twisted-compatible
+ entrypoints.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "TwistedInternetTaskReact"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -986,6 +1210,7 @@ Monadic actions can be fully captured by controllers.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language=Haskell"
 inline false
 status open
 
@@ -1165,7 +1390,17 @@ When values are extracted from this program, there will be one satisfying
 \begin_inset Formula $y$
 \end_inset
 
- are assigned true.
+ are assigned 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+true
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
