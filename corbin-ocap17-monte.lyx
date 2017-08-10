@@ -27,7 +27,7 @@
 }
 \lstset{language=Monte}
 
-\newcommand{\df}{\scshape{DeepFrozen} }
+\newcommand{\df}{ DeepFrozen }
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -154,25 +154,149 @@ Surface Syntax
 \end_layout
 
 \begin_layout Standard
-For readers familiar with E, Monte will immediately be readable.
- The two largest differences are the use of the 
+\begin_inset listings
+lstparams "float=hb,frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A mint, the 
 \begin_inset Quotes eld
 \end_inset
 
-object
+hello world
 \begin_inset Quotes erd
+\end_inset
+
+ of capability-safe languages.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def makeMint():
+\end_layout
+
+\begin_layout Plain Layout
+
+  def [sealer, unsealer] := makeBrandPair("mint")
+\end_layout
+
+\begin_layout Plain Layout
+
+  return def mint.makePurse(var balance :(Int >= 0)):
+\end_layout
+
+\begin_layout Plain Layout
+
+    def decr(amount :(0..balance)) :Void { balance -= amount }
+\end_layout
+
+\begin_layout Plain Layout
+
+    return object purse:
+\end_layout
+
+\begin_layout Plain Layout
+
+      to getBalance() :Int { return balance }
+\end_layout
+
+\begin_layout Plain Layout
+
+      to sprout() { return mint.makePurse(0) }
+\end_layout
+
+\begin_layout Plain Layout
+
+      to getDecr() { return sealer.seal(decr) }
+\end_layout
+
+\begin_layout Plain Layout
+
+      to deposit(amount :(Int >= 0), src) :Void:
+\end_layout
+
+\begin_layout Plain Layout
+
+        unsealer.unseal(src.getDecr())(amount)
+\end_layout
+
+\begin_layout Plain Layout
+
+        balance += amount
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We start with the 
+\begin_inset Quotes eld
+\end_inset
+
+hello world
+\begin_inset Quotes erd
+\end_inset
+
+ of capability-safe languages, the basic mint.
+ For readers familiar with E, Monte will immediately be readable.
+ The two largest differences are the use of the 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+object
+\end_layout
+
 \end_inset
 
  keyword instead of 
-\begin_inset Quotes eld
-\end_inset
+\begin_inset Flex Code
+status open
 
+\begin_layout Plain Layout
 def
-\begin_inset Quotes erd
+\end_layout
+
 \end_inset
 
  for object literals, and the allowance of Python-style colons instead of
  braces for delimiting blocks.
+ Additionally, other minor enhancements are on display in this example.
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+def mint.makePurse(balance) { \SpecialChar ldots
+ }
+\end_layout
+
+\end_inset
+
+ is shorthand for 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+object mint { to makePurse(balance) { \SpecialChar ldots
+ } }
+\end_layout
+
+\end_inset
+
+, defining a single-method object.
  The Monte manual, available at 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -185,6 +309,75 @@ key "Monte"
 
 \begin_layout Section
 Named Arguments
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "float=ht,frame=lines"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Making rectangles with named arguments.
+\end_layout
+
+\end_inset
+
+def makeRectangle(=> width, => height):
+\end_layout
+
+\begin_layout Plain Layout
+
+    return object rectangle:
+\end_layout
+
+\begin_layout Plain Layout
+
+        to getWidth():
+\end_layout
+
+\begin_layout Plain Layout
+
+            return width
+\end_layout
+
+\begin_layout Plain Layout
+
+        to getHeight():
+\end_layout
+
+\begin_layout Plain Layout
+
+            return height
+\end_layout
+
+\begin_layout Plain Layout
+
+def width := 5
+\end_layout
+
+\begin_layout Plain Layout
+
+def height := 7
+\end_layout
+
+\begin_layout Plain Layout
+
+def rect1 := makeRectangle("width" => width, "height" => height)
+\end_layout
+
+\begin_layout Plain Layout
+
+def rect2 := makeRectangle(=> width, => height)
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -246,67 +439,8 @@ argumentName
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-def makeRectangle(=> width, => height):
-\end_layout
-
-\begin_layout Plain Layout
-
-    return object rectangle:
-\end_layout
-
-\begin_layout Plain Layout
-
-        to getWidth():
-\end_layout
-
-\begin_layout Plain Layout
-
-            return width
-\end_layout
-
-\begin_layout Plain Layout
-
-        to getHeight():
-\end_layout
-
-\begin_layout Plain Layout
-
-            return height
-\end_layout
-
-\begin_layout Plain Layout
-
-def width := 5
-\end_layout
-
-\begin_layout Plain Layout
-
-def height := 7
-\end_layout
-
-\begin_layout Plain Layout
-
-def rect1 := makeRectangle("width" => width, "height" => height)
-\end_layout
-
-\begin_layout Plain Layout
-
-def rect2 := makeRectangle(=> width, => height)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Default values and guards are supported as well:
+Default values and guards are supported as well, so that callers can optionally
+ omit passing certain named arguments:
 \end_layout
 
 \begin_layout Standard
@@ -368,11 +502,28 @@ status open
 \end_layout
 
 \begin_layout Subsection
+Optional Named Arguments
+\end_layout
+
+\begin_layout Standard
+Crucially, any named arguments which are passed but not used by the receiving
+ object are discarded.
+ Callers may use this fact to pass optional named arguments which may or
+ may not be used by the receiver.
+\end_layout
+
+\begin_layout Standard
+Since named arguments can be optional both for callers and receivers, named
+ arguments can be used to ease compatibility concerns when upgrading module
+ code or object versions.
+\end_layout
+
+\begin_layout Subsection
 Locked Methods
 \end_layout
 
 \begin_layout Standard
-The keys can be arbitrary objects.
+The named-argument keys can be arbitrary objects.
  Indeed, consider what happens when a closely-held object is used as a key:
 \end_layout
 
@@ -513,62 +664,17 @@ E has internal iteration, where collections are passed a loop body and iterate
  Monte has external iteration and explicit iterator objects instead.
 \end_layout
 
-\begin_layout Subsection
-Rationale
-\end_layout
-
 \begin_layout Standard
-Compared to internal iteration, external iteration with iterators offers
- several concrete benefits to Monte's design:
-\end_layout
-
-\begin_layout Itemize
-Iterators only take one user-provided callable in their entire API, and
- that callable should be an ejector.
- (An idiomatic iterator will use 
-\begin_inset Flex Code
+\begin_inset listings
+lstparams "float=b,frame=lines"
+inline false
 status open
 
 \begin_layout Plain Layout
-throw.eject/2
-\end_layout
 
-\end_inset
+\begin_inset Caption Standard
 
- to fire the ejector, ensuring that the callable cannot fool the iterator.)
- This is a massive improvement on the amount of code which a user must pass
- to a potentially-untrusted collection, since an iterator can do no worse
- than looping forever.
- As a result, the expansion to Kernel-Monte does not have to generate defensive
- assertions in for-loops and while-loops to prevent the loop bodies from
- being stolen by malicious collections, as in E.
-\end_layout
-
-\begin_layout Itemize
-An iterator is slightly more attenuated, in terms of authority, than its
- corresponding list of pairs.
- While a list can be examined many times, an iterator can only be consumed
- once in a linear fashion.
- Additionally, non-list collections can be iterable, allowing automatic
- attenuation from iterables to iterators.
-\end_layout
-
-\begin_layout Itemize
-Iterators intrinsically permit pausing iteration.
- In particular, since iterators must complete their computation within a
- single turn, concurrency-aware patterns like asynchronously iterating over
- one item per turn are collection-independent and require no special container
- code.
- This means that iterators can represent partially-done computations which
- would be too expensive to consume in a single turn.
- For example, Monte Kanren logic programs can be turned into iterables and
- run incrementally.
- The Monte parser and lexer use iterables to incrementally parse Monte source
- code.
-\end_layout
-
-\begin_layout Itemize
-Composition of iterators is relatively easy; the classic 
+\begin_layout Plain Layout
 \begin_inset Flex Code
 status open
 
@@ -578,12 +684,10 @@ zip()
 
 \end_inset
 
- function can be written incorrectly in fewer than ten lines:
-\begin_inset listings
-inline false
-status open
+ via composition of iterators.
+\end_layout
 
-\begin_layout Plain Layout
+\end_inset
 
 def zip(left, right) as DeepFrozen:
 \end_layout
@@ -630,7 +734,76 @@ def zip(left, right) as DeepFrozen:
 
 \end_inset
 
-(A correct version of 
+
+\end_layout
+
+\begin_layout Subsection
+Rationale
+\end_layout
+
+\begin_layout Standard
+Compared to internal iteration, external iteration with iterators offers
+ several concrete benefits to Monte's design:
+\end_layout
+
+\begin_layout Itemize
+Iterators only take one user-provided callable in their entire API, and
+ that callable should be an ejector.
+ (An idiomatic iterator will use 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+throw.eject/2
+\end_layout
+
+\end_inset
+
+ to fire the ejector, ensuring that the callable cannot fool the iterator.)
+ Instead of passing loop bodies to potentially-untrusted collections, users
+ can now be confident that an iterator can, at worst, loop forever.
+ As a result, the expansion to Kernel-Monte does not have to generate defensive
+ assertions in for-loops and while-loops to prevent the loop bodies from
+ being stolen by malicious collections, as in E.
+\end_layout
+
+\begin_layout Itemize
+An iterator is slightly more attenuated, in terms of authority, than its
+ corresponding list of pairs.
+ While a list can be examined many times, an iterator can only be consumed
+ once in a linear fashion.
+ Additionally, non-list collections can be iterable, allowing automatic
+ attenuation from iterables to iterators.
+\end_layout
+
+\begin_layout Itemize
+Iterators intrinsically permit pausing iteration.
+ In particular, since iterators must complete their computation within a
+ single turn, concurrency-aware patterns like asynchronously iterating over
+ one item per turn are collection-independent and require no special container
+ code.
+ This means that iterators can represent partially-done computations which
+ would be too expensive to consume in a single turn.
+ For example, Monte Kanren logic programs can be turned into iterables and
+ run incrementally.
+ The Monte parser and lexer use iterables to incrementally parse Monte source
+ code.
+\end_layout
+
+\begin_layout Itemize
+Composition of iterators is relatively easy; a limited version of the classic
+ 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+zip()
+\end_layout
+
+\end_inset
+
+ function can be written in fewer than ten lines.
+ A complete version of 
 \begin_inset Flex Code
 status open
 
@@ -648,8 +821,24 @@ lib/iterators
 \begin_inset Quotes erd
 \end_inset
 
- module, handling arbitrary numbers of arguments, iterables of unequal length,
- and other expected features.)
+ module.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "TyphonLibIterators"
+
+\end_inset
+
+ This version allows arbitrary numbers of arguments and has configurable
+ support for iterables of unequal (
+\begin_inset Quotes eld
+\end_inset
+
+ragged
+\begin_inset Quotes erd
+\end_inset
+
+) length.
 \end_layout
 
 \begin_layout Subsection
@@ -776,7 +965,7 @@ _loop()
 \begin_layout Standard
 We can recover classic mapping-and-filtering behavior with list comprehension
  syntax.
- For example, a list of odd integers from 0 to 20 could be expressed as:
+ For example, to make a list of odd integers from 0 to 20:
 \end_layout
 
 \begin_layout Standard
@@ -973,6 +1162,8 @@ status open
 , which is a convenience that both allows users to import only needed names
  and also allows for modules to add new exports without breaking users,
  making it easier to expand a module's interface without breaking compatibility.
+ This is analogous to our usage of named arguments to allow optional names
+ in calls.
 \end_layout
 
 \begin_layout Subsection
@@ -1033,7 +1224,7 @@ df
 
 \begin_layout Standard
 There are some difficulties, too.
- In particular, imported names often must be guarded by 
+ In particular, imported names usually must be guarded by 
 \begin_inset ERT
 status open
 
@@ -1046,7 +1237,7 @@ df
 
 \end_inset
 
-, which is an irritating syntactic burden.
+.
  The only common exception is importing from the special 
 \begin_inset Quotes eld
 \end_inset
@@ -1082,15 +1273,9 @@ main
 status open
 
 \begin_layout Plain Layout
-[
-\begin_inset Quotes eld
-\end_inset
 
-run
-\begin_inset Quotes erd
-\end_inset
-
-, [argv :List[Str]], unsafeScope :Map]
+\family typewriter
+[“run”, [argv :List[Str]], unsafeScope :Map]
 \end_layout
 
 \end_inset
@@ -1722,7 +1907,8 @@ This asymmetry leads to two distinct tools for non-local control flow.
  control flow resumes at the end of the escape-expression and the result
  is passed to the catcher.
  The code which holds the escape-expression gets to manage the computation
- inside of it.
+ inside of it, and none of the intervening code may catch or otherwise interfere
+ with the ejection.
 \end_layout
 
 \begin_layout Standard
@@ -1730,7 +1916,9 @@ Now, examining exceptions, we would expect that try-expressions fill the
  same role as escape-expressions.
  However, a try-expression does not grant direct access to any caught exceptions
 , because they are sealed.
- So, who gets the result instead?
+ So, who gets the result instead? In general, we say that the result should
+ be delivered to the caller who caused the current turn, and not to any
+ intervening code inside the turn.
 \end_layout
 
 \begin_layout Standard
@@ -1778,7 +1966,8 @@ Future Directions
 
 \begin_layout Itemize
 Controllers could be extended in several directions.
- Possibilities include monad comprehensions, 
+ Possibilities include asynchronous/promise-aware variants of current loop
+ syntax, monad comprehensions, 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Giorgidze11bringingback"
@@ -1850,9 +2039,9 @@ muffin
 \begin_layout Itemize
 The Monte language and standard library continue to evolve as our contributors
  explore their own interests.
- Several contributors have started building alternative runtimes for Monte,
- and we are considering including support for modern capability-relevant
- technologies like Cap'n Proto and Named Data Networking 
+ Several contributors have started building alternative runtimes for Monte.
+ We are considering including support for modern capability-relevant technologie
+s like Cap'n Proto and Named Data Networking 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "NDN"
@@ -1860,6 +2049,8 @@ key "NDN"
 \end_inset
 
  as standard library modules.
+ Community members have suggested auditors for enforcing algebraic properties,
+ or for enforcing the correctness of primitive recursive arithmetic.
 \end_layout
 
 \begin_layout Subsection
@@ -1877,22 +2068,6 @@ We thank the Monte community at large for many helpful comments made while
 LatexCommand bibtex
 bibfiles "corbin-ocap17-monte"
 options "plain"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
-\start_of_appendix
-Example Monte Module
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand lstinputlisting
-filename "/home/simpson/typhon/mast/lib/entropy/pi.mt"
-lstparams "inputencoding=utf8,extendedchars=true,caption={lib/entropy/pi.mt from the Typhon standard library}"
 
 \end_inset
 
