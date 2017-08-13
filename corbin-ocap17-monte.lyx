@@ -312,75 +312,6 @@ Named Arguments
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-lstparams "float=ht,frame=lines"
-inline false
-status collapsed
-
-\begin_layout Plain Layout
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Making rectangles with named arguments.
-\end_layout
-
-\end_inset
-
-def makeRectangle(=> width, => height):
-\end_layout
-
-\begin_layout Plain Layout
-
-    return object rectangle:
-\end_layout
-
-\begin_layout Plain Layout
-
-        to getWidth():
-\end_layout
-
-\begin_layout Plain Layout
-
-            return width
-\end_layout
-
-\begin_layout Plain Layout
-
-        to getHeight():
-\end_layout
-
-\begin_layout Plain Layout
-
-            return height
-\end_layout
-
-\begin_layout Plain Layout
-
-def width := 5
-\end_layout
-
-\begin_layout Plain Layout
-
-def height := 7
-\end_layout
-
-\begin_layout Plain Layout
-
-def rect1 := makeRectangle("width" => width, "height" => height)
-\end_layout
-
-\begin_layout Plain Layout
-
-def rect2 := makeRectangle(=> width, => height)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 In addition to positional arguments, Monte supports passing arguments keyed
  by name, which come after positional arguments.
 \end_layout
@@ -468,12 +399,91 @@ def adjustAndPad(adjustment, => padding :Str := " "):
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset listings
+lstparams "float=hb,frame=lines"
+inline false
+status collapsed
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Making rectangles with named arguments.
+\end_layout
+
+\end_inset
+
+def makeRectangle(=> width :Int, => height :Int):
+\end_layout
+
+\begin_layout Plain Layout
+
+    return object rectangle:
+\end_layout
+
+\begin_layout Plain Layout
+
+        to getWidth() :Int:
+\end_layout
+
+\begin_layout Plain Layout
+
+            return width
+\end_layout
+
+\begin_layout Plain Layout
+
+        to getHeight() :Int:
+\end_layout
+
+\begin_layout Plain Layout
+
+            return height
+\end_layout
+
+\begin_layout Plain Layout
+
+        to getArea() :Int:
+\end_layout
+
+\begin_layout Plain Layout
+
+            return width * height
+\end_layout
+
+\begin_layout Plain Layout
+
+def width := 5
+\end_layout
+
+\begin_layout Plain Layout
+
+def height := 7
+\end_layout
+
+\begin_layout Plain Layout
+
+def rect1 := makeRectangle("width" => width, "height" => height)
+\end_layout
+
+\begin_layout Plain Layout
+
+def rect2 := makeRectangle(=> width, => height)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Semantics
 \end_layout
 
 \begin_layout Standard
-Under the hood, Monte accomodates all of this functionality with a relatively
+Under the hood, Monte accommodates all of this functionality with a relatively
  small change of semantics.
  In E, a message always conforms to 
 \begin_inset Flex Code
@@ -666,9 +676,9 @@ E has internal iteration, where collections are passed a loop body and iterate
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "float=b,frame=lines"
+lstparams "float=hb,frame=lines"
 inline false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -760,7 +770,7 @@ throw.eject/2
 \end_inset
 
  to fire the ejector, ensuring that the callable cannot fool the iterator.)
- Instead of passing loop bodies to potentially-untrusted collections, users
+ Instead of passing loop bodies to potentially untrusted collections, users
  can now be confident that an iterator can, at worst, loop forever.
  As a result, the expansion to Kernel-Monte does not have to generate defensive
  assertions in for-loops and while-loops to prevent the loop bodies from
@@ -1391,7 +1401,17 @@ Timer It can read the system clock and measure time taken during vat turns.
 currentRuntime It can access various runtime-specific capabilities.
  This object is meant for staging non-standard platform-specific functionality.
  In this particular case, Typhon exports a non-standard cryptographic interface
- based on libsodium via currentRuntime.getCrypt().
+ based on libsodium via 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+currentRuntime.getCrypt()
+\end_layout
+
+\end_inset
+
+.
  This is needed for cryptography services.
 \end_layout
 
@@ -1402,7 +1422,7 @@ getAddrInfo It can resolve hostnames using the system DNS configuration.
 
 \begin_layout Description
 makeFileResource It can read and write to the filesystem.
- This is needed for storing todo lists.
+ This is needed for storing to-do lists.
 \end_layout
 
 \begin_layout Description
@@ -1578,7 +1598,7 @@ do
 \end_inset
 
  of inputs 
-\begin_inset Formula $[in_{0},in_{1},\dots,in_{i}]$
+\begin_inset Formula $[\text{in}_{0},\text{in}_{1},\dots,\text{in}_{i}]$
 \end_inset
 
 , an arity 
@@ -1586,7 +1606,7 @@ do
 \end_inset
 
  of arguments 
-\begin_inset Formula $[arg_{0},arg_{1},\dots,arg_{j}]$
+\begin_inset Formula $[\text{arg}_{0},\text{arg}_{1},\dots,\text{arg}_{j}]$
 \end_inset
 
 , and a thunk known as the block.
@@ -2054,7 +2074,7 @@ key "NDN"
 \end_layout
 
 \begin_layout Subsection
-Acknowledgements
+Acknowledgments
 \end_layout
 
 \begin_layout Standard

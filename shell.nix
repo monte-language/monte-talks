@@ -7,6 +7,7 @@ in pkgs.stdenv.mkDerivation {
     git
     texlive.combined.scheme-medium
     texlive.bin.xdvi
-    lyx firefox
+    lyx hunspellDicts.en-us
+    firefox
   ];
 }
