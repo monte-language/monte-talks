@@ -52,7 +52,7 @@ logicalmkup
 \font_sf_scale 100 100
 \font_tt_scale 100 100
 \graphics default
-\default_output_format pdf5
+\default_output_format default
 \output_sync 0
 \bibtex_command default
 \index_command default
@@ -1401,7 +1401,14 @@ Timer It can read the system clock and measure time taken during vat turns.
 currentRuntime It can access various runtime-specific capabilities.
  This object is meant for staging non-standard platform-specific functionality.
  In this particular case, Typhon exports a non-standard cryptographic interface
- based on libsodium via 
+ based on libsodium 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sodium"
+
+\end_inset
+
+ via 
 \begin_inset Flex Code
 status open
 
@@ -1437,7 +1444,7 @@ unsealException It can examine exceptions caught by try-expressions.
 
 \begin_layout Standard
 Most of these unsafe powers have been well-studied, although we highlight
- 
+ the interesting case of 
 \begin_inset Flex Code
 status open
 
@@ -1755,7 +1762,7 @@ Logic programming can be difficult without a domain-specific language.
  
 \begin_inset CommandInset citation
 LatexCommand cite
-key "Kanren"
+key "Kanren,friedman2005the"
 
 \end_inset
 
@@ -1986,8 +1993,8 @@ Future Directions
 
 \begin_layout Itemize
 Controllers could be extended in several directions.
- Possibilities include asynchronous/promise-aware variants of current loop
- syntax, monad comprehensions, 
+ Possibilities include asynchronous or promise-aware variants of current
+ loop syntax, monad comprehensions, 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Giorgidze11bringingback"
@@ -2061,7 +2068,14 @@ The Monte language and standard library continue to evolve as our contributors
  explore their own interests.
  Several contributors have started building alternative runtimes for Monte.
  We are considering including support for modern capability-relevant technologie
-s like Cap'n Proto and Named Data Networking 
+s like Cap'n Proto 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "CapnProto"
+
+\end_inset
+
+ and Named Data Networking 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "NDN"
@@ -2081,6 +2095,9 @@ Acknowledgments
 We thank the Monte community at large for many helpful comments made while
  this paper was being drafted.
  We also thank the original creators of E for motivating our work.
+ Finally, we thank W.
+ Allen Short for being the other author of Monte, and Emily Dunham for convincin
+g us to write and submit this paper.
 \end_layout
 
 \begin_layout Standard
