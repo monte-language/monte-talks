@@ -1,0 +1,552 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass beamer
+\begin_preamble
+\usetheme{CambridgeUS}
+\end_preamble
+\use_default_options true
+\begin_modules
+logicalmkup
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Monte: A Spiritual Successor to E
+\end_layout
+
+\begin_layout Author
+Corbin Simpson
+\end_layout
+
+\begin_layout Institute
+Matador Cloud LLC
+\end_layout
+
+\begin_layout Date
+October 24, 2017
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Overview
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Where did we come from?
+\end_layout
+
+\begin_layout Itemize
+Why are we here?
+\end_layout
+
+\begin_layout Itemize
+Where are we headed?
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+E: An Archeology
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+What is E?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+E is a family of lambda calculi with:
+\end_layout
+
+\begin_layout Itemize
+local state
+\end_layout
+
+\begin_layout Itemize
+mutable closures
+\end_layout
+
+\begin_layout Itemize
+managed runtime with:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+garbage collector, promises, safe scope
+\end_layout
+
+\begin_layout Itemize
+compiler/interpreter tools
+\end_layout
+
+\begin_layout Itemize
+communicating event loops (
+\begin_inset Quotes eld
+\end_inset
+
+vats
+\begin_inset Quotes erd
+\end_inset
+
+)
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Timeline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+1993: Original-E
+\end_layout
+
+\begin_layout Itemize
+1996: Joule
+\end_layout
+
+\begin_layout Itemize
+1997: E-on-Java
+\end_layout
+
+\begin_layout Itemize
+2004: Joe-E
+\end_layout
+
+\begin_layout Itemize
+2005: E-on-CL
+\end_layout
+
+\begin_layout Itemize
+2008: Caja, Ecru
+\end_layout
+
+\begin_layout Itemize
+2012: Experiments (Greyface, Secret)
+\end_layout
+
+\begin_layout Itemize
+2013: 
+\begin_inset Quotes eld
+\end_inset
+
+Original-Monte
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+2014: Monte-on-Typhon
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Whither E?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Knowledge of E is relatively rare.
+ Why? We can only guess:
+\end_layout
+
+\begin_layout Itemize
+People were not ready for E in the 90s
+\end_layout
+
+\begin_layout Itemize
+Capability-security theory remains unpopular
+\end_layout
+
+\begin_layout Itemize
+October 2016: Winter finally arrived
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Monte Essentials
+\end_layout
+
+\begin_layout Subsection
+Changes to Semantics
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Named Arguments
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Monte messages have one additional parameter.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+[verb :Str, args :List, namedArgs :Map]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This enables named arguments, including:
+\end_layout
+
+\begin_layout Itemize
+Optional arguments
+\end_layout
+
+\begin_layout Itemize
+Miranda named arguments
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Sealed Exceptions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Exceptions cannot be examined without 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+unsealException
+\end_layout
+
+\end_inset
+
+!
+\end_layout
+
+\begin_layout Standard
+We can deliver errors to only two places:
+\end_layout
+
+\begin_layout Itemize
+The caller, via ejectors
+\end_layout
+
+\begin_layout Itemize
+The debugger, via exceptions
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+try { throw(42) } catch p { traceln.exception(p) }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Changes to Builtins
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Changes to Safe Scope
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+safeScope Objects which have no dangerous authority, because they either
+ can be synthesized from scratch, or come from the runtime's TCB (e.g., 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+eval
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Many gratuitous renamings
+\end_layout
+
+\begin_layout Itemize
+Adjustments for changes to Kernel-Monte
+\end_layout
+
+\begin_layout Itemize
+Iterators
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+Int
+\end_layout
+
+\end_inset
+
+ guards the ring of integers
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+b``
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+Bytes
+\end_layout
+
+\end_inset
+
+ for bytestrings
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+makeLazySlot
+\end_layout
+
+\end_inset
+
+ to work around lack of 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+EventuallyDeepFrozen
+\end_layout
+
+\end_inset
+
+ for the common case of wanting lazy private state
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Perhaps memoization is the only other interesting use case?
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Iterators
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
