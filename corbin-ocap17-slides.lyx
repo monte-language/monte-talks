@@ -548,5 +548,99 @@ Iterators
 
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+Small, tight, self-attenuating API
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+iterable._makeIterator()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+iterator.next(ej)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Easy composition
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Incremental computation
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Iteration can be performed cleanly across many turns
+\end_layout
+
+\begin_layout Itemize
+The cost of inverting control has been minimal
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Modules
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Motivation for Modules
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Composition is good
+\end_layout
+
+\begin_layout Itemize
+Compilation units are good
+\end_layout
+
+\begin_layout Itemize
+Mutable global state is bad
+\end_layout
+
+\begin_layout Itemize
+Petnames are ugly
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
