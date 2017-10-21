@@ -7,6 +7,23 @@
 \textclass beamer
 \begin_preamble
 \usetheme{CambridgeUS}
+
+\usepackage{listings}
+\lstdefinelanguage{Monte}
+{
+  morekeywords={
+    [2]as,bind,def,else,escape,[2]exit,[2]extends,[2]guards,[2]implements,
+    [2]in,[2]method,pass,var,via,
+    exports,import,
+    fn,interface,object,[2]to,
+    catch,if,finally,for,[2]match,switch,try,when,while,
+    break,continue,return},
+  sensitive=false,
+  morestring=[b]',
+  morestring=[b]",
+  morecomment=[l]{\#}
+}
+\lstset{language=Monte}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -580,11 +597,11 @@ iterator.next(ej)
 
 \end_layout
 
+\end_deeper
 \begin_layout Itemize
 Easy composition
 \end_layout
 
-\end_deeper
 \begin_layout Itemize
 Incremental computation
 \end_layout
@@ -639,6 +656,314 @@ Mutable global state is bad
 
 \begin_layout Itemize
 Petnames are ugly
+\end_layout
+
+\begin_layout Itemize
+Our solution should be boring and easy to bootstrap
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Modules on the Outside
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Zero or more export values
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Exports are selected by name, as in Haskell
+\end_layout
+
+\begin_layout Itemize
+Exports must pass 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+DeepFrozen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Export name 
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+main
+\end_layout
+
+\end_inset
+
+ is an entrypoint
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Zero or more import patterns
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Patterns are indexed by petname
+\end_layout
+
+\begin_layout Itemize
+Each pattern matches against a map of names to import values
+\end_layout
+
+\begin_layout Itemize
+One module's exports are another module's imports
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize},frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+import "lib/iterators" =~ [=> zip :DeepFrozen]
+\end_layout
+
+\begin_layout Plain Layout
+
+exports (zipSum)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def zipSum(left :List, right :List) :List as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  return [for [l, r] in (zip(left, right)) l + r]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout FragileFrame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Modules on the Inside
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Modules are plain old (zero-magic) Monte objects
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+module.dependencies() :List[Str]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+module.run(package) :Map[Str, DeepFrozen]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Flex Code
+status open
+
+\begin_layout Plain Layout
+package.
+\begin_inset Quotes erd
+\end_inset
+
+import
+\begin_inset Quotes erd
+\end_inset
+
+(petname :Str)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize},frame=lines"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+object _ as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+  to dependencies() :List[Str]:
+\end_layout
+
+\begin_layout Plain Layout
+
+    return ["lib/iterators"]
+\end_layout
+
+\begin_layout Plain Layout
+
+  to run(package) :Map[Str, DeepFrozen]:
+\end_layout
+
+\begin_layout Plain Layout
+
+    def [=> zip :DeepFrozen] | _ := package."import"(
+\end_layout
+
+\begin_layout Plain Layout
+
+            "lib/iterators")
+\end_layout
+
+\begin_layout Plain Layout
+
+    def zipSum(left :List, right :List) :List as DeepFrozen:
+\end_layout
+
+\begin_layout Plain Layout
+
+      return [for [l, r] in (zip(left, right)) l + r]
+\end_layout
+
+\begin_layout Plain Layout
+
+    return [=> zipSum]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The Future
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+What's Next?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Slide contents TBD
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The End
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Questions?
+\end_layout
+
+\begin_layout Itemize
+Thanks!
 \end_layout
 
 \end_deeper
