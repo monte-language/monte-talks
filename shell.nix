@@ -8,6 +8,6 @@ in pkgs.stdenv.mkDerivation {
     texlive.combined.scheme-medium
     texlive.bin.xdvi
     lyx hunspellDicts.en-us
-    firefox
+    firefox impressive
   ];
 }

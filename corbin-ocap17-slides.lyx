@@ -352,11 +352,18 @@ This enables named arguments, including:
 \end_layout
 
 \begin_layout Itemize
-Optional arguments
+Optional arguments, for configuration or forward-compatibility
 \end_layout
 
 \begin_layout Itemize
-Miranda named arguments
+\begin_inset Quotes eld
+\end_inset
+
+Miranda
+\begin_inset Quotes erd
+\end_inset
+
+ named arguments provided by the runtime to every call
 \end_layout
 
 \end_deeper
@@ -413,6 +420,7 @@ The debugger, via exceptions
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "frame=lines"
 inline false
 status open
 
@@ -453,24 +461,19 @@ Changes to Safe Scope
 
 \begin_deeper
 \begin_layout Description
-safeScope Objects which have no dangerous authority, because they either
- can be synthesized from scratch, or come from the runtime's TCB (e.g., 
-\begin_inset Flex Code
-status open
-
-\begin_layout Plain Layout
-eval
-\end_layout
-
-\end_inset
-
-)
+safeScope Objects which have no dangerous authority
 \end_layout
 
 \begin_layout Itemize
 Many gratuitous renamings
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+Less Java flavoring, more consistency
+\end_layout
+
+\end_deeper
 \begin_layout Itemize
 Adjustments for changes to Kernel-Monte
 \end_layout
@@ -655,9 +658,15 @@ Mutable global state is bad
 \end_layout
 
 \begin_layout Itemize
-Petnames are ugly
+Petnames can be ugly, but globally-unique identifiers are bad
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+Filesystem paths are dangerous and should be abstracted away
+\end_layout
+
+\end_deeper
 \begin_layout Itemize
 Our solution should be boring and easy to bootstrap
 \end_layout
