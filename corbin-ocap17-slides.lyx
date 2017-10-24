@@ -163,7 +163,7 @@ What is E?
 
 \begin_deeper
 \begin_layout Standard
-E is a family of lambda calculi with:
+E is a family of message-passing lambda calculi with:
 \end_layout
 
 \begin_layout Itemize
@@ -172,6 +172,18 @@ local state
 
 \begin_layout Itemize
 mutable closures
+\end_layout
+
+\begin_layout Itemize
+single-shot delimited continuations (
+\begin_inset Quotes eld
+\end_inset
+
+ejectors
+\begin_inset Quotes erd
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Itemize
@@ -942,7 +954,15 @@ What's Next?
 
 \begin_deeper
 \begin_layout Itemize
-Slide contents TBD
+New compiler stages
+\end_layout
+
+\begin_layout Itemize
+New parser combinator library
+\end_layout
+
+\begin_layout Itemize
+Community projects
 \end_layout
 
 \end_deeper
