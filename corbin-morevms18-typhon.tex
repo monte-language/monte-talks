@@ -1,0 +1,60 @@
+\documentclass[sigconf, 10pt]{acmart}
+
+\usepackage{booktabs} % For formal tables
+
+
+% Copyright
+%\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+%Conference
+\acmConference{MoreVMs 2018}{April 2018}{Nice, France}
+\copyrightyear{2018}
+
+
+\begin{document}
+\title{Basic Nanopass for RPython}
+
+
+\author{Corbin Simpson}
+\affiliation{%
+  \institution{Matador Cloud LLC}
+  \city{Portland}
+  \state{Oregon}
+  \country{USA}
+}
+\email{corbin@matador.cloud}
+
+
+\begin{abstract}
+The nanopass style of compiler design eases the task of maintaining
+data-transformation passes in compilers, at the cost of requiring a
+metaprogramming framework which aids in the generation of the boilerplate for
+those passes. We present a Python 2 module for generating a nanopass compiler
+pipeline for the RPython toolchain. Our approach uses standard Python
+metaprogramming tactics to generate boilerplate RPython classes. The generated
+passes use features of the RPython type system to enforce a modicum of
+correctness, preventing certain common programmer errors. Passes also have
+utility methods for raising error contexts to the end user and handling source
+span information. Our module is about 200 lines of code and is used in the
+Typhon compiler to optimize and interpret the Monte programming language.
+\end{abstract}
+
+
+\keywords{Monte, RPython, nanopass}
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{corbin-morevms18-typhon}
+
+
+\maketitle
+
+\end{document}
