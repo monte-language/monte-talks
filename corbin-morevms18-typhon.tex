@@ -34,17 +34,27 @@
 
 
 \begin{abstract}
-The nanopass style of compiler design eases the task of maintaining
-data-transformation passes in compilers, at the cost of requiring a
-metaprogramming framework which aids in the generation of the boilerplate for
-those passes. We present a Python 2 module for generating a nanopass compiler
-pipeline for the RPython toolchain. Our approach uses standard Python
-metaprogramming tactics to generate boilerplate RPython classes. The generated
-passes use features of the RPython type system to enforce a modicum of
-correctness, preventing certain common programmer errors. Passes also have
-utility methods for raising error contexts to the end user and handling source
-span information. Our module is about 200 lines of code and is used in the
-Typhon compiler to optimize and interpret the Monte programming language.
+The nanopass~\cite{nanopass} style of compiler design eases the task of
+maintaining data-transformation passes in compilers. However, nanopass
+compilers require a metaprogramming framework which aids in the generation of
+the boilerplate for those passes. The original nanopass toolchain is a Racket
+module of over 2000 lines of code containing many Racket-specific features.
+
+We present a Python 2 module for generating a nanopass compiler pipeline for
+the RPython toolchain~\cite{Ancona:2007:RST:1297081.1297091}. Our approach
+uses standard Python metaprogramming tactics to generate boilerplate RPython
+classes. Users of our module write standard RPython, inheriting from our
+classes and providing plain visitor methods.
+
+The generated passes use features of the RPython type system to enforce a
+modicum of correctness, preventing certain common programmer errors. Passes
+also have utility methods for raising error contexts to the end user and
+handling source span information.
+
+Our module is about 200 lines of code. We developed and use our nanopass
+module in the Typhon~\cite{typhon} compiler to optimize and interpret the
+Monte programming language~\cite{monte}. Our source code is publically
+available under a Free Software license at~\cite{typhonNanopass}.
 \end{abstract}
 
 
